@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Taman Nasional Gunung Rinjani</name>
+    <description>Zona kawasan TNGR — Lombok, Nusa Tenggara Barat</description>
+
+    <Style id="styleKawasan">
+      <LineStyle><color>ffff9900</color><width>2</width></LineStyle>
+      <PolyStyle><color>5522aaff</color><fill>1</fill><outline>1</outline></PolyStyle>
+    </Style>
+    <Style id="styleKaldera">
+      <LineStyle><color>ffff44cc</color><width>2</width></LineStyle>
+      <PolyStyle><color>55cc44ff</color><fill>1</fill><outline>1</outline></PolyStyle>
+    </Style>
+    <Style id="styleJalur">
+      <LineStyle><color>ff00ff44</color><width>2</width></LineStyle>
+      <PolyStyle><color>5544dd88</color><fill>1</fill><outline>1</outline></PolyStyle>
+    </Style>
+
+    <!-- Zona 1: Batas TN — BT 116°21'30"–116°34'15", LS 8°18'18"–8°32'19" -->
+    <Placemark id="zona-kawasan">
+      <name>Batas Taman Nasional Gunung Rinjani</name>
+      <description>Kawasan TNGR 41.330 ha, SK Menhut No.280/Kpts-II/1997</description>
+      <styleUrl>#styleKawasan</styleUrl>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>
+        116.3850,-8.3100,0
+        116.4550,-8.3100,0
+        116.5380,-8.3280,0
+        116.5680,-8.3750,0
+        116.5650,-8.4550,0
+        116.4900,-8.5350,0
+        116.3950,-8.5350,0
+        116.3600,-8.4650,0
+        116.3600,-8.3600,0
+        116.3850,-8.3100,0
+      </coordinates></LinearRing></outerBoundaryIs></Polygon>
+    </Placemark>
+
+    <!-- Zona 2: Kaldera & Segara Anak -->
+    <!-- Plawangan Sembalun (rim timur): 08°23'36.1"S 116°26'26.4"E = -8.3933, 116.4407 -->
+    <Placemark id="zona-kaldera">
+      <name>Kawasan Kaldera &amp; Danau Segara Anak</name>
+      <description>Kaldera vulkanik, Danau Segara Anak 2.004 mdpl, 45 km², Gunung Barujari 2.376 mdpl</description>
+      <styleUrl>#styleKaldera</styleUrl>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>
+        116.3550,-8.3830,0
+        116.4150,-8.3880,0
+        116.4410,-8.3930,0
+        116.4480,-8.4200,0
+        116.4320,-8.4550,0
+        116.3850,-8.4620,0
+        116.3460,-8.4480,0
+        116.3320,-8.4150,0
+        116.3380,-8.3920,0
+        116.3550,-8.3830,0
+      </coordinates></LinearRing></outerBoundaryIs></Polygon>
+    </Placemark>
+
+    <!-- Zona 3: Koridor Jalur Sembalun -->
+    <!-- Sembalun Lawang (-8.355, 116.527) → Plawangan (-8.3933, 116.4407) → Puncak (-8.4167, 116.4667) -->
+    <Placemark id="zona-jalur">
+      <name>Koridor Jalur Pendakian Sembalun</name>
+      <description>Jalur resmi Sembalun Lawang (1.156 mdpl) → Plawangan Sembalun (2.639 mdpl) → Puncak (3.726 mdpl)</description>
+      <styleUrl>#styleJalur</styleUrl>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>
+        116.5190,-8.3400,0
+        116.5400,-8.3520,0
+        116.5420,-8.3680,0
+        116.5250,-8.4000,0
+        116.4520,-8.4080,0
+        116.4700,-8.4280,0
+        116.4820,-8.4180,0
+        116.4650,-8.4040,0
+        116.4320,-8.3800,0
+        116.5140,-8.3550,0
+        116.5190,-8.3400,0
+      </coordinates></LinearRing></outerBoundaryIs></Polygon>
+    </Placemark>
+
+  </Document>
+</kml>

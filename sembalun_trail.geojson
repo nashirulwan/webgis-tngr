@@ -1,0 +1,50 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Jalur Pendakian Sembalun",
+        "description": "Jalur resmi pendakian via Sembalun Lawang. Basecamp (1.156 mdpl) \u2192 Plawangan Sembalun (2.639 mdpl) \u2192 Puncak (3.726 mdpl). Jarak \u00b117 km.",
+        "source": "GPS waypoints resmi BTNGR & pendaki"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            116.527,
+            -8.3558
+          ],
+          [
+            116.515,
+            -8.363
+          ],
+          [
+            116.501,
+            -8.372
+          ],
+          [
+            116.487,
+            -8.379
+          ],
+          [
+            116.474,
+            -8.384
+          ],
+          [
+            116.4407,
+            -8.3933
+          ],
+          [
+            116.448,
+            -8.402
+          ],
+          [
+            116.4667,
+            -8.4167
+          ]
+        ]
+      }
+    }
+  ]
+}

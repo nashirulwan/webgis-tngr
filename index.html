@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebGIS — Taman Nasional Gunung Rinjani</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══ Header ══ -->
+  <header>
+    <div class="logo">🏔</div>
+    <h1>
+      WebGIS Taman Nasional Gunung Rinjani
+      <span>Lombok, Nusa Tenggara Barat · 3.726 mdpl</span>
+    </h1>
+  </header>
+
+  <!-- ══ Main ══ -->
+  <div class="main">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar">
+
+      <!-- Layer -->
+      <div class="sidebar-section">
+        <h2>Layer</h2>
+
+        <div class="layer-card card-kawasan active" id="card-kawasan">
+          <div class="layer-header" onclick="toggleLayer('kawasan')">
+            <div class="layer-dot dot-kawasan"></div>
+            <span class="layer-name">Kawasan TN Rinjani</span>
+            <div class="layer-toggle on" id="toggle-kawasan"></div>
+          </div>
+          <div class="layer-desc">Batas resmi kawasan, 41.330 ha</div>
+        </div>
+
+        <div class="layer-card card-kaldera active" id="card-kaldera">
+          <div class="layer-header" onclick="toggleLayer('kaldera')">
+            <div class="layer-dot dot-kaldera"></div>
+            <span class="layer-name">Danau Segara Anak</span>
+            <div class="layer-toggle on" id="toggle-kaldera"></div>
+          </div>
+          <div class="layer-desc">Danau kawah di kaldera Rinjani, 2.004 mdpl</div>
+        </div>
+
+        <div class="layer-card card-jalur active" id="card-jalur">
+          <div class="layer-header" onclick="toggleLayer('jalur')">
+            <div class="layer-dot dot-jalur"></div>
+            <span class="layer-name">Jalur Sembalun</span>
+            <div class="layer-toggle on" id="toggle-jalur"></div>
+          </div>
+          <div class="layer-desc">Rute pendakian dari Sembalun Lawang ke puncak</div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="sidebar-section">
+        <h2>Gunung Rinjani</h2>
+        <div class="info-box">
+          Gunung berapi di Pulau Lombok, Nusa Tenggara Barat. Dengan ketinggian
+          3.726 mdpl, Rinjani menjadi gunung berapi tertinggi kedua di Indonesia
+          setelah Kerinci.
+          <div style="margin-top:6px;"><span class="coord-badge">-8.4167°, 116.4667°</span></div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-item">
+            <span class="stat-val">41.330 ha</span>
+            <span class="stat-key">Luas kawasan</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-val">3.726 m</span>
+            <span class="stat-key">Elevasi puncak</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-val">2.004 m</span>
+            <span class="stat-key">Segara Anak</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-val">45 km²</span>
+            <span class="stat-key">Luas danau</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legenda -->
+      <div class="sidebar-section">
+        <h2>Legenda</h2>
+        <div class="legend-item">
+          <div class="legend-swatch" style="background:#22aaff;"></div>
+          Kawasan TN Rinjani
+        </div>
+        <div class="legend-item">
+          <div class="legend-swatch" style="background:#cc44ff;"></div>
+          Danau Segara Anak
+        </div>
+        <div class="legend-item">
+          <div style="height:3px;width:24px;background:#44dd88;border-radius:2px;align-self:center;flex-shrink:0;"></div>
+          Jalur Sembalun
+        </div>
+        <div class="legend-item">
+          <div style="width:12px;height:12px;border-radius:50%;background:#ff9900;flex-shrink:0;"></div>
+          Titik referensi
+        </div>
+      </div>
+
+      <!-- Sumber data -->
+      <div class="sidebar-section">
+        <h2>Sumber Data</h2>
+        <div class="info-box source-list">
+          <div class="source-item">
+            <span class="source-dot" style="background:#22aaff"></span>
+            <span>Batas TN — <a href="https://www.protectedplanet.net" target="_blank">Protected Planet</a> (WDPA Jun 2026)</span>
+          </div>
+          <div class="source-item">
+            <span class="source-dot" style="background:#cc44ff"></span>
+            <span>Segara Anak — <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a></span>
+          </div>
+          <div class="source-item">
+            <span class="source-dot" style="background:#44dd88"></span>
+            <span>Jalur Sembalun — GPS waypoints BTNGR</span>
+          </div>
+          <div class="source-item">
+            <span class="source-dot" style="background:#ff9900"></span>
+            <span>Marker — koordinat GPS lapangan</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ── Map ── -->
+    <div style="position:relative;flex:1;">
+      <div id="map"></div>
+      <div id="coords-bar">lat: — &nbsp; lng: —</div>
+    </div>
+
+  </div>
+
+  <!-- ══ Scripts ══ -->
+  <script>
+    const API_KEY = 'AIzaSyAHOsQp9UHVTEnVdIOs8NvmBvKAMcT7hP8';
+    const CENTER  = { lat: -8.422, lng: 116.465 };
+
+    // ── Data zona ────────────────────────────────────────────
+    const ZONES = {
+      kawasan: {
+        label    : 'Batas Taman Nasional Gunung Rinjani',
+        color    : '#22aaff',
+        fillColor: '#22aaff',
+        badge    : '#22aaff',
+        // BT: 116°21'30"–116°34'15" = 116.358–116.571, LS: 8°18'18"–8°32'19" = -8.305–-8.539
+        // SK Menhut No.280/Kpts-II/1997, luas 41.330 ha
+        coords: [
+          {lat:-8.310, lng:116.385},
+          {lat:-8.310, lng:116.455},
+          {lat:-8.328, lng:116.538},
+          {lat:-8.375, lng:116.568},
+          {lat:-8.455, lng:116.565},
+          {lat:-8.535, lng:116.490},
+          {lat:-8.535, lng:116.395},
+          {lat:-8.465, lng:116.360},
+          {lat:-8.360, lng:116.360},
+        ],
+        desc: 'Kawasan Taman Nasional Gunung Rinjani (TNGR) seluas 41.330 ha. Ditetapkan dengan SK Menhut No.280/Kpts-II/1997. Mencakup wilayah tiga kabupaten: Lombok Timur, Lombok Utara, dan Lombok Tengah.',
+      },
+      kaldera: {
+        label    : 'Kawasan Kaldera & Danau Segara Anak',
+        color    : '#cc44ff',
+        fillColor: '#cc44ff',
+        badge    : '#cc44ff',
+        // Kaldera terbentuk dari erupsi Samalas 1257 M
+        // Danau Segara Anak ~7,5x6 km, 45 km², kedalaman 230 m, ketinggian 2.004 mdpl
+        // Plawangan Sembalun (rim timur): 08°23'36.1"S 116°26'26.4"E = -8.3933, 116.4407
+        coords: [
+          {lat:-8.383, lng:116.355},
+          {lat:-8.388, lng:116.415},
+          {lat:-8.393, lng:116.441},
+          {lat:-8.420, lng:116.448},
+          {lat:-8.455, lng:116.432},
+          {lat:-8.462, lng:116.385},
+          {lat:-8.448, lng:116.346},
+          {lat:-8.415, lng:116.332},
+          {lat:-8.392, lng:116.338},
+        ],
+        desc: 'Kawasan kaldera vulkanik TNGR. Berisi Danau Segara Anak (2.004 mdpl, luas 45 km², kedalaman maks 230 m) yang terbentuk dari erupsi Samalas 1257 M. Di tengah danau berdiri Gunung Barujari (2.376 mdpl) yang masih aktif.',
+      },
+      jalur: {
+        label    : 'Koridor Jalur Pendakian Sembalun',
+        color    : '#44dd88',
+        fillColor: '#44dd88',
+        badge    : '#44dd88',
+        // Sembalun Lawang (-8.355, 116.527, 1.156 mdpl)
+        // → Plawangan Sembalun (-8.3933, 116.4407, 2.639 mdpl) — koordinat resmi GPS
+        // → Puncak Rinjani (-8.4167, 116.4667, 3.726 mdpl)
+        coords: [
+          {lat:-8.340, lng:116.519},
+          {lat:-8.352, lng:116.540},
+          {lat:-8.368, lng:116.542},
+          {lat:-8.400, lng:116.525},
+          {lat:-8.408, lng:116.452},
+          {lat:-8.428, lng:116.470},
+          {lat:-8.418, lng:116.482},
+          {lat:-8.404, lng:116.465},
+          {lat:-8.380, lng:116.432},
+          {lat:-8.355, lng:116.514},
+        ],
+        desc: 'Koridor jalur pendakian resmi via Sembalun Lawang. Rute: Basecamp Sembalun (1.156 mdpl) → Pos 1 → Pos 2 → Pos 3 → Plawangan Sembalun (2.639 mdpl) → Puncak Rinjani (3.726 mdpl). Jarak total ±17 km, elevasi gain ±2.570 m.',
+      },
+    };
+
+    // ── Titik penting (markers) ──────────────────────────────
+    const MARKERS = [
+      {
+        lat  : -8.4167, lng: 116.4667,
+        label: '▲',
+        title: 'Puncak Rinjani',
+        desc : '3.726 mdpl — Puncak tertinggi di Lombok, gunung berapi aktif tertinggi ke-2 di Indonesia.',
+        color: '#ff6600',
+      },
+      {
+        lat  : -8.420, lng: 116.385,
+        label: '◉',
+        title: 'Danau Segara Anak',
+        desc : '2.004 mdpl — Danau kawah seluas 45 km², kedalaman 230 m. Dikeramatkan masyarakat Sasak dan Bali.',
+        color: '#22aaff',
+      },
+      {
+        lat  : -8.438, lng: 116.400,
+        label: '△',
+        title: 'Gunung Barujari',
+        desc : '2.376 mdpl — Gunung berapi aktif di tengah Danau Segara Anak. Erupsi terakhir 2015.',
+        color: '#ff4444',
+      },
+      {
+        lat  : -8.356, lng: 116.527,
+        label: '⛺',
+        title: 'Basecamp Sembalun',
+        desc : '1.156 mdpl — Pintu masuk jalur Sembalun, Lombok Timur. Registrasi pendaki via aplikasi eRinjani.',
+        color: '#44dd88',
+      },
+      {
+        lat  : -8.317, lng: 116.408,
+        label: '⛺',
+        title: 'Basecamp Senaru',
+        desc : '573 mdpl — Pintu masuk jalur Senaru, Lombok Utara. Jalur lebih panjang namun pemandangan lebih beragam.',
+        color: '#44dd88',
+      },
+    ];
+
+    // ── State ────────────────────────────────────────────────
+    let map, infoWindow;
+    let polygons     = {};
+    let layerVisible = { kawasan: true, kaldera: true, jalur: true };
+    let editMode     = false;
+    let activeEditZone = 'kawasan';
+
+    // ── Init map ─────────────────────────────────────────────
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center           : CENTER,
+        zoom             : 11,
+        mapTypeId        : 'hybrid',
+        mapTypeControl   : true,
+        mapTypeControlOptions: {
+          style    : google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+          position : google.maps.ControlPosition.TOP_RIGHT,
+        },
+        streetViewControl: false,
+        fullscreenControl: true,
+        zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+      });
+
+      infoWindow = new google.maps.InfoWindow();
+
+      map.addListener('mousemove', (e) => {
+        document.getElementById('coords-bar').textContent =
+          `lat: ${e.latLng.lat().toFixed(5)}   lng: ${e.latLng.lng().toFixed(5)}`;
+      });
+
+      // Load batas TN resmi dari GeoJSON WDPA
+      fetch('rinjani_boundary.geojson')
+        .then(r => r.json())
+        .then(gj => applyGeoJSON(gj, 'Data Resmi WDPA / Protected Planet'))
+        .catch(() => {});
+
+      // Load jalur Sembalun sebagai polyline GPS
+      fetch('sembalun_trail.geojson')
+        .then(r => r.json())
+        .then(gj => applyTrailGeoJSON(gj))
+        .catch(() => {});
+
+      // Load boundary Danau Segara Anak dari OSM
+      fetch('segara_anak.geojson')
+        .then(r => r.json())
+        .then(gj => applySegaraAnak(gj))
+        .catch(() => {});
+
+      // Buat polygon zona
+      Object.entries(ZONES).forEach(([key, zone]) => {
+        const poly = new google.maps.Polygon({
+          paths        : zone.coords,
+          strokeColor  : zone.color,
+          strokeOpacity: 0.9,
+          strokeWeight : 2,
+          fillColor    : zone.fillColor,
+          fillOpacity  : 0.25,
+          map          : map,
+          editable     : false,
+        });
+
+        const refreshCoords = () => {
+          if (editMode && activeEditZone === key) renderCoordOutput(key);
+        };
+        google.maps.event.addListener(poly.getPath(), 'set_at',    refreshCoords);
+        google.maps.event.addListener(poly.getPath(), 'insert_at', refreshCoords);
+        google.maps.event.addListener(poly.getPath(), 'remove_at', refreshCoords);
+
+        poly.addListener('click', (e) => {
+          if (editMode) return;
+          infoWindow.setContent(`
+            <div class="iw-content">
+              <h3>${zone.label}</h3>
+              <p>${zone.desc}</p>
+              <span class="iw-badge" style="background:${zone.badge}22;color:${zone.badge};border:1px solid ${zone.badge}40">
+                ${key.charAt(0).toUpperCase() + key.slice(1)}
+              </span>
+            </div>`);
+          infoWindow.setPosition(e.latLng);
+          infoWindow.open(map);
+        });
+
+        polygons[key] = poly;
+      });
+
+      // Buat markers titik penting
+      MARKERS.forEach(m => {
+        const marker = new google.maps.Marker({
+          position : { lat: m.lat, lng: m.lng },
+          map      : map,
+          title    : m.title,
+          label    : { text: m.label, color: '#fff', fontSize: '14px' },
+          icon     : {
+            path        : google.maps.SymbolPath.CIRCLE,
+            scale       : 10,
+            fillColor   : m.color,
+            fillOpacity : 0.9,
+            strokeColor : '#fff',
+            strokeWeight: 2,
+          },
+        });
+
+        marker.addListener('click', () => {
+          infoWindow.setContent(`
+            <div class="iw-content">
+              <h3>${m.title}</h3>
+              <p>${m.desc}</p>
+            </div>`);
+          infoWindow.open(map, marker);
+        });
+      });
+    }
+
+    // ── Toggle layer ─────────────────────────────────────────
+    function toggleLayer(key) {
+      layerVisible[key] = !layerVisible[key];
+      const visible = layerVisible[key];
+
+      // Kontrol layer GeoJSON/polyline yang aktif, bukan polygon estimasi
+      if (key === 'kawasan') {
+        geojsonPolygons.length
+          ? geojsonPolygons.forEach(p => p.setMap(visible ? map : null))
+          : polygons[key].setMap(visible ? map : null);
+      } else if (key === 'kaldera') {
+        segaraAnakPolygons.length
+          ? segaraAnakPolygons.forEach(p => p.setMap(visible ? map : null))
+          : polygons[key].setMap(visible ? map : null);
+      } else if (key === 'jalur') {
+        trailPolylines.length
+          ? trailPolylines.forEach(p => p.setMap(visible ? map : null))
+          : polygons[key].setMap(visible ? map : null);
+      }
+
+      document.getElementById(`toggle-${key}`).classList.toggle('on', visible);
+      document.getElementById(`card-${key}`).classList.toggle('active', visible);
+    }
+
+    // ── Edit Mode ─────────────────────────────────────────────
+    function toggleEditMode() {
+      editMode = !editMode;
+      const btn   = document.getElementById('btn-edit');
+      const panel = document.getElementById('edit-panel');
+      if (editMode) {
+        btn.textContent = '✅ Nonaktifkan Edit Mode';
+        btn.classList.add('active');
+        panel.style.display = 'block';
+        Object.values(polygons).forEach(p => p.setOptions({ editable: true }));
+        infoWindow.close();
+        renderCoordOutput(activeEditZone);
+      } else {
+        btn.textContent = '✏️ Aktifkan Edit Mode';
+        btn.classList.remove('active');
+        panel.style.display = 'none';
+        Object.values(polygons).forEach(p => p.setOptions({ editable: false }));
+      }
+    }
+
+    function selectEditZone(key) {
+      activeEditZone = key;
+      document.querySelectorAll('.zone-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(`tab-${key}`).classList.add('active');
+      renderCoordOutput(key);
+      const bounds = new google.maps.LatLngBounds();
+      polygons[key].getPath().forEach(pt => bounds.extend(pt));
+      map.fitBounds(bounds, 80);
+    }
+
+    function renderCoordOutput(key) {
+      const lines = [];
+      polygons[key].getPath().forEach(pt => {
+        lines.push(`  {lat:${pt.lat().toFixed(4)}, lng:${pt.lng().toFixed(4)}},`);
+      });
+      document.getElementById('coord-output').value =
+        `coords: [\n${lines.join('\n')}\n]`;
+    }
+
+    function copyCoords() {
+      const ta = document.getElementById('coord-output');
+      ta.select();
+      document.execCommand('copy');
+      const toast = document.getElementById('copy-toast');
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 1800);
+    }
+
+    function resetZone() {
+      polygons[activeEditZone].setPath(ZONES[activeEditZone].coords);
+      renderCoordOutput(activeEditZone);
+    }
+
+    // ── Segara Anak loader (OSM polygon) ─────────────────────
+    let segaraAnakPolygons = [];
+
+    function applySegaraAnak(gj) {
+      segaraAnakPolygons.forEach(p => p.setMap(null));
+      segaraAnakPolygons = [];
+
+      const features = gj.type === 'FeatureCollection' ? gj.features : [gj];
+      features.forEach(feat => {
+        const geom = feat.geometry;
+        if (!geom) return;
+        const rings = geom.type === 'Polygon'      ? geom.coordinates
+                    : geom.type === 'MultiPolygon' ? geom.coordinates.flat(1)
+                    : [];
+        rings.forEach(ring => {
+          const poly = new google.maps.Polygon({
+            paths        : ring.map(([lng, lat]) => ({ lat, lng })),
+            strokeColor  : '#cc44ff',
+            strokeOpacity: 1,
+            strokeWeight : 2.5,
+            fillColor    : '#cc44ff',
+            fillOpacity  : 0.30,
+            map,
+          });
+          poly.addListener('click', (ev) => {
+            const props = feat.properties || {};
+            infoWindow.setContent(`
+              <div class="iw-content">
+                <h3>${props.name || 'Danau Segara Anak'}</h3>
+                <p>${props.description || ''}</p>
+                <span class="iw-badge" style="background:#cc44ff22;color:#cc44ff;border:1px solid #cc44ff40">OpenStreetMap</span>
+              </div>`);
+            infoWindow.setPosition(ev.latLng);
+            infoWindow.open(map);
+          });
+          segaraAnakPolygons.push(poly);
+        });
+      });
+
+      // Sembunyikan polygon estimasi (diam-diam, toggle tetap ON)
+      if (polygons['kaldera']) polygons['kaldera'].setMap(null);
+    }
+
+    // ── Trail GeoJSON loader (LineString → Polyline) ─────────
+    let trailPolylines = [];
+
+    function applyTrailGeoJSON(gj) {
+      trailPolylines.forEach(p => p.setMap(null));
+      trailPolylines = [];
+
+      const features = gj.type === 'FeatureCollection' ? gj.features : [gj];
+      features.forEach(feat => {
+        const geom = feat.geometry;
+        if (!geom) return;
+        const lines = geom.type === 'LineString'      ? [geom.coordinates]
+                    : geom.type === 'MultiLineString' ? geom.coordinates
+                    : [];
+
+        lines.forEach(coords => {
+          const path = coords.map(([lng, lat]) => ({ lat, lng }));
+          const line = new google.maps.Polyline({
+            path,
+            strokeColor  : '#44dd88',
+            strokeOpacity: 1,
+            strokeWeight : 4,
+            icons        : [{
+              icon  : { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, scale: 3, strokeColor: '#44dd88' },
+              offset: '100%',
+              repeat: '15%',
+            }],
+            map,
+          });
+
+          const props = feat.properties || {};
+          line.addListener('click', (ev) => {
+            infoWindow.setContent(`
+              <div class="iw-content">
+                <h3>${props.name || 'Jalur Pendakian'}</h3>
+                <p>${props.description || ''}</p>
+                <span class="iw-badge" style="background:#44dd8822;color:#44dd88;border:1px solid #44dd8840">Trail GPS</span>
+              </div>`);
+            infoWindow.setPosition(ev.latLng);
+            infoWindow.open(map);
+          });
+
+          trailPolylines.push(line);
+        });
+      });
+
+      // Sembunyikan polygon estimasi (toggle tetap ON)
+      if (trailPolylines.length > 0 && polygons['jalur']) {
+        polygons['jalur'].setMap(null);
+      }
+    }
+
+    // ── GeoJSON loader ───────────────────────────────────────
+    let geojsonPolygons = [];
+
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('drop-zone').classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) parseGeoJSON(file);
+    }
+
+    function handleFileInput(e) {
+      const file = e.target.files[0];
+      if (file) parseGeoJSON(file);
+    }
+
+    function parseGeoJSON(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const gj = JSON.parse(e.target.result);
+          applyGeoJSON(gj, file.name);
+        } catch {
+          showGeoStatus('❌ File tidak valid — pastikan format GeoJSON.', '#ff6666');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function applyGeoJSON(gj, filename) {
+      // Hapus polygon GeoJSON lama
+      geojsonPolygons.forEach(p => p.setMap(null));
+      geojsonPolygons = [];
+
+      const features = gj.type === 'FeatureCollection' ? gj.features
+                     : gj.type === 'Feature'           ? [gj]
+                     : [];
+
+      let count = 0;
+      features.forEach(feat => {
+        const geom = feat.geometry;
+        if (!geom) return;
+        const rings = geom.type === 'Polygon'      ? geom.coordinates
+                    : geom.type === 'MultiPolygon' ? geom.coordinates.flat(1)
+                    : [];
+
+        rings.forEach(ring => {
+          const paths = ring.map(([lng, lat]) => ({ lat, lng }));
+          const poly  = new google.maps.Polygon({
+            paths,
+            strokeColor  : '#22aaff',
+            strokeOpacity: 1,
+            strokeWeight : 2.5,
+            fillColor    : '#22aaff',
+            fillOpacity  : 0.20,
+            map          : map,
+          });
+          poly.addListener('click', (ev) => {
+            infoWindow.setContent(`
+              <div class="iw-content">
+                <h3>Batas Taman Nasional (Resmi)</h3>
+                <p>Data dari Protected Planet / WDPA.<br/>File: ${filename}</p>
+                <span class="iw-badge" style="background:#22aaff22;color:#22aaff;border:1px solid #22aaff40">GeoJSON Import</span>
+              </div>`);
+            infoWindow.setPosition(ev.latLng);
+            infoWindow.open(map);
+          });
+          geojsonPolygons.push(poly);
+          count++;
+        });
+      });
+
+      // Sembunyikan polygon estimasi (toggle tetap ON)
+      if (count > 0) {
+        polygons['kawasan'].setMap(null);
+
+        // Fit map ke boundary baru
+        const bounds = new google.maps.LatLngBounds();
+        geojsonPolygons.forEach(p => p.getPath().forEach(pt => bounds.extend(pt)));
+        map.fitBounds(bounds, 40);
+
+        document.getElementById('drop-label').innerHTML =
+          `✅ ${filename}<br/><span style="font-size:10px;color:#5a7fa0">${count} polygon dimuat</span>`;
+        showGeoStatus(`✅ Berhasil: ${count} polygon dari "${filename}" ditampilkan di peta.`, '#44dd88');
+      } else {
+        showGeoStatus('⚠️ Tidak ada polygon ditemukan dalam file ini.', '#ffaa44');
+      }
+    }
+
+    function showGeoStatus(msg, color) {
+      const el = document.getElementById('geojson-status');
+      el.style.display = 'block';
+      el.style.color   = color;
+      el.textContent   = msg;
+    }
+
+    // ── Load Google Maps ──────────────────────────────────────
+    (function loadGoogleMaps() {
+      if (!API_KEY || API_KEY === 'MASUKKAN_API_KEY_DISINI') {
+        document.getElementById('map').innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#0f1929;color:#5a7fa0;">
+            Isi API Key Google Maps terlebih dahulu.
+          </div>`;
+        return;
+      }
+      const script   = document.createElement('script');
+      script.src     = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMap&v=weekly`;
+      script.async   = true;
+      script.defer   = true;
+      script.onerror = () => {
+        document.getElementById('map').innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#0f1929;color:#ff6666;">
+            Gagal memuat Google Maps — cek API key &amp; koneksi.
+          </div>`;
+      };
+      document.head.appendChild(script);
+    })();
+  </script>
+
+</body>
+</html>
