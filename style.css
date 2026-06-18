@@ -21,7 +21,7 @@ header {
   align-items: center;
   gap: 14px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-  z-index: 10;
+  z-index: 1000;
 }
 
 header .logo {
@@ -50,11 +50,26 @@ header h1 span {
   display: block;
 }
 
+#sidebar-toggle {
+  display: none;            /* hanya muncul di mobile */
+  background: #1a2744;
+  border: 1px solid #1e3a5f;
+  color: #c8d8e8;
+  font-size: 18px;
+  line-height: 1;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 /* ── Main layout ── */
 .main {
   display: flex;
   flex: 1;
   overflow: hidden;
+  position: relative;
 }
 
 /* ── Sidebar ── */
@@ -160,14 +175,24 @@ header h1 span {
   line-height: 1.4;
 }
 
+.layer-desc b { color: #7ab4dd; font-weight: 600; }
+
 /* Zone colors */
 .dot-kawasan  { background: #22aaff; }
 .dot-kaldera  { background: #cc44ff; }
-.dot-jalur    { background: #44dd88; }
+.dot-sembalun { background: #44dd88; }
+.dot-senaru   { background: #ffaa44; }
+.dot-pos      { background: #7a9; }
+.dot-wisata   { background: #33bbff; }
+.dot-titik    { background: #ff9900; }
 
 .card-kawasan  { --accent: #22aaff; }
 .card-kaldera  { --accent: #cc44ff; }
-.card-jalur    { --accent: #44dd88; }
+.card-sembalun { --accent: #44dd88; }
+.card-senaru   { --accent: #ffaa44; }
+.card-pos      { --accent: #77aa99; }
+.card-wisata   { --accent: #33bbff; }
+.card-titik    { --accent: #ff9900; }
 
 /* ── Info panel ── */
 .info-box {
@@ -178,13 +203,6 @@ header h1 span {
   font-size: 12px;
   line-height: 1.6;
   color: #8aabcc;
-}
-
-.info-box strong {
-  color: #c8d8e8;
-  display: block;
-  margin-bottom: 4px;
-  font-size: 13px;
 }
 
 .coord-badge {
@@ -261,147 +279,6 @@ header h1 span {
   text-decoration: underline;
 }
 
-/* ── GeoJSON Drop Zone ── */
-.drop-zone {
-  border: 2px dashed #1e3a5f;
-  border-radius: 8px;
-  padding: 14px 10px;
-  text-align: center;
-  font-size: 12px;
-  color: #5a7fa0;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  line-height: 1.6;
-}
-
-.drop-zone:hover,
-.drop-zone.drag-over {
-  border-color: #22aaff;
-  background: #0f2030;
-  color: #7ab4dd;
-}
-
-/* ── Edit Mode ── */
-.btn-edit {
-  width: 100%;
-  padding: 9px 12px;
-  background: #1a2744;
-  border: 1px solid #1e3a5f;
-  border-radius: 7px;
-  color: #c8d8e8;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-  text-align: left;
-}
-
-.btn-edit:hover {
-  background: #1e3560;
-}
-
-.btn-edit.active {
-  background: #1a3a1a;
-  border-color: #44bb44;
-  color: #88ee88;
-}
-
-.edit-hint {
-  font-size: 11px;
-  color: #5a7fa0;
-  line-height: 1.5;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  background: #0f1929;
-  border-radius: 6px;
-  padding: 8px 10px;
-}
-
-.zone-tabs {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 8px;
-}
-
-.zone-tab {
-  flex: 1;
-  padding: 6px 4px;
-  background: #1a2744;
-  border: 1px solid #1e3a5f;
-  border-radius: 5px;
-  color: #5a7fa0;
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.zone-tab:hover {
-  border-color: var(--c);
-  color: #c8d8e8;
-}
-
-.zone-tab.active {
-  background: color-mix(in srgb, var(--c) 20%, #1a2744);
-  border-color: var(--c);
-  color: var(--c);
-  font-weight: 600;
-}
-
-.coord-output {
-  width: 100%;
-  height: 120px;
-  background: #0f1929;
-  border: 1px solid #1e3a5f;
-  border-radius: 6px;
-  color: #7ab4dd;
-  font-size: 10px;
-  font-family: monospace;
-  padding: 8px;
-  resize: none;
-  line-height: 1.5;
-}
-
-.edit-actions {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.btn-copy, .btn-reset {
-  flex: 1;
-  padding: 7px;
-  border-radius: 6px;
-  border: 1px solid;
-  font-size: 12px;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-
-.btn-copy {
-  background: #1a3a5f;
-  border-color: #4488ff;
-  color: #7ab4dd;
-}
-
-.btn-reset {
-  background: #3a1a1a;
-  border-color: #ff4444;
-  color: #ff8888;
-}
-
-.btn-copy:hover, .btn-reset:hover {
-  opacity: 0.8;
-}
-
-.copy-toast {
-  text-align: center;
-  font-size: 11px;
-  color: #44bb44;
-  margin-top: 6px;
-  padding: 4px;
-  background: #1a2744;
-  border-radius: 4px;
-}
-
 /* ── Legend ── */
 .legend-item {
   display: flex;
@@ -421,13 +298,18 @@ header h1 span {
 }
 
 /* ── Map container ── */
-#map {
-  flex: 1;
-  height: 100%;
+.map-wrap {
   position: relative;
+  flex: 1;
 }
 
-/* ── Coordinates tooltip ── */
+#map {
+  width: 100%;
+  height: 100%;
+  background: #0f1929;
+}
+
+/* ── Coordinates bar ── */
 #coords-bar {
   position: absolute;
   bottom: 8px;
@@ -440,39 +322,91 @@ header h1 span {
   padding: 4px 10px;
   border-radius: 20px;
   pointer-events: none;
-  z-index: 5;
+  z-index: 500;
   border: 1px solid #0f3460;
 }
 
-/* ── Popup / InfoWindow override ── */
-.gm-style .gm-style-iw-c {
-  background: #16213e !important;
-  border: 1px solid #0f3460 !important;
-  border-radius: 8px !important;
-  padding: 0 !important;
-}
-
-.gm-style .gm-style-iw-d {
-  overflow: hidden !important;
-}
-
-.iw-content {
-  padding: 14px;
-  min-width: 200px;
-}
-
-.iw-content h3 {
-  font-size: 14px;
-  color: #c8d8e8;
-  margin-bottom: 6px;
-}
-
-.iw-content p {
+/* ── Status loader ── */
+#load-status {
+  display: none;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(22,33,62,0.95);
   font-size: 12px;
-  color: #8aabcc;
-  line-height: 1.5;
+  padding: 8px 14px;
+  border-radius: 8px;
+  z-index: 500;
+  border: 1px solid #0f3460;
+  max-width: 80%;
+  text-align: center;
 }
 
+/* ── POI marker (divIcon) ── */
+.poi-icon { background: none; border: none; }
+.poi-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+
+/* ── Loading overlay ── */
+#map-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(15,25,41,0.85);
+  color: #8aabcc;
+  font-size: 13px;
+}
+.spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid #1e3a5f;
+  border-top-color: #22aaff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Tombol fit/reset view ── */
+.fit-btn {
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
+  width: 30px;
+  height: 30px;
+  line-height: 30px !important;
+  color: #c8d8e8 !important;
+}
+
+/* ── Leaflet popup theming ── */
+.leaflet-popup-content-wrapper {
+  background: #16213e;
+  border: 1px solid #0f3460;
+  border-radius: 8px;
+  color: #e0e0e0;
+}
+.leaflet-popup-tip { background: #16213e; border: 1px solid #0f3460; }
+.leaflet-popup-content { margin: 0; }
+.leaflet-popup-close-button { color: #8aabcc !important; }
+
+.iw-content { padding: 14px; min-width: 200px; }
+.iw-content h3 { font-size: 14px; color: #c8d8e8; margin-bottom: 6px; }
+.iw-content p { font-size: 12px; color: #8aabcc; line-height: 1.5; }
 .iw-badge {
   display: inline-block;
   margin-top: 8px;
@@ -482,26 +416,42 @@ header h1 span {
   font-weight: 600;
 }
 
-/* ── Scrollbar ── */
-.sidebar::-webkit-scrollbar {
-  width: 4px;
-}
-.sidebar::-webkit-scrollbar-track {
+/* Leaflet control contrast on dark UI */
+.leaflet-control-layers, .leaflet-bar a {
   background: #16213e;
+  color: #c8d8e8;
 }
-.sidebar::-webkit-scrollbar-thumb {
-  background: #0f3460;
-  border-radius: 2px;
+.leaflet-control-layers-expanded { color: #c8d8e8; padding: 8px 10px; }
+.leaflet-bar a { border-bottom-color: #0f3460; }
+.leaflet-control-attribution {
+  background: rgba(22,33,62,0.85) !important;
+  color: #8aabcc !important;
 }
+.leaflet-control-attribution a { color: #7ab4dd !important; }
 
-/* ── Responsive ── */
-@media (max-width: 640px) {
+/* ── Scrollbar ── */
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: #16213e; }
+.sidebar::-webkit-scrollbar-thumb { background: #0f3460; border-radius: 2px; }
+
+/* ── Responsive (mobile: sidebar jadi drawer) ── */
+@media (max-width: 720px) {
+  #sidebar-toggle { display: block; }
+  header h1 { font-size: 15px; }
+
   .sidebar {
-    width: 100%;
-    max-height: 220px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 900;
+    width: 82%;
+    max-width: 300px;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 4px 0 16px rgba(0,0,0,0.5);
   }
+  .sidebar.open { transform: translateX(0); }
 
-  .main {
-    flex-direction: column;
-  }
+  .map-wrap { width: 100%; }
 }
