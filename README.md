@@ -1,10 +1,10 @@
-# WebGIS Taman Nasional Gunung Rinjani
+### WebGIS Taman Nasional Gunung Rinjani
 
 ![WebGIS Taman Nasional Gunung Rinjani](docs/screenshot.png)
 
 Interactive WebGIS displaying **OpenStreetMap** base maps with multiple spatial data layers for Taman Nasional Gunung Rinjani, Lombok, NTB.
 
-## Features
+#### Features
 - Interactive map: **zoom in/out, pan**, switch base maps (OpenStreetMap / Topographic / Esri Satellite), **⛶ fit-to-bounds** button
 - **KML layer** for official TNGR boundary (WDPA / Protected Planet data)
 - Additional **OpenStreetMap** layers: Segara Anak Lake, **Sembalun** & **Senaru** hiking trails (real geometry, winding paths), climbing **posts** & Plawangan, **tourist spots** (Sendang Gila, Tiu Kelep, Mangku Sakti waterfalls) and Aik Kalak **hot spring**
@@ -12,11 +12,11 @@ Interactive WebGIS displaying **OpenStreetMap** base maps with multiple spatial 
 - Toggle layers on/off, legend, area info, coordinate display & zoom level
 - Responsive: on mobile, layer panel becomes a drawer (☰ button)
 
-## How to run
+#### How to run
 Since the page loads `.kml`/`.geojson` files, run via a **local server** (not double-click) so KML layers load properly:
 
 ```bash
-# from this folder
+### from this folder
 python3 -m http.server 8000
 ```
 Then open in browser: <http://localhost:8000>
@@ -25,7 +25,7 @@ Then open in browser: <http://localhost:8000>
 
 If opened via double-click (`file://`), the map still works using the `data.js` fallback, but a server is recommended for native KML loading.
 
-## File structure
+#### File structure
 | File | Description |
 |------|-------------|
 | `index.html` | Main page + map logic (Leaflet) |
@@ -40,8 +40,12 @@ If opened via double-click (`file://`), the map still works using the `data.js` 
 | `rinjani_boundary.geojson` | Raw TNGR boundary data (WDPA) |
 | `build_data.py` | Script to generate `rinjani.kml` & `data.js` |
 
-## Data sources
+#### Data sources
 - Boundary: **WDPA / Protected Planet** (Gunung Rinjani, IUCN cat. II, ~41,330 ha)
 - Lake, trails (Sembalun & Senaru), posts, waterfalls & hot spring: **OpenStreetMap**
   (fetched via Overpass API; hiking route relations 17259217 & 17259241)
 - Base maps: © OpenStreetMap contributors; satellite © Esri; topographic © OpenTopoMap
+
+#### License
+
+MIT, see LICENSE.
