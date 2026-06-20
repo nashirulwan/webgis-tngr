@@ -16,7 +16,7 @@ Interactive WebGIS displaying **OpenStreetMap** base maps with multiple spatial 
 Since the page loads `.kml`/`.geojson` files, run via a **local server** (not double-click) so KML layers load properly:
 
 ```bash
-### from this folder
+# from this folder
 python3 -m http.server 8000
 ```
 Then open in browser: <http://localhost:8000>
