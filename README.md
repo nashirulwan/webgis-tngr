@@ -2,7 +2,7 @@
 
 ![WebGIS Taman Nasional Gunung Rinjani](docs/screenshot.png)
 
-Interactive WebGIS displaying **OpenStreetMap** base maps with multiple spatial data layers for Taman Nasional Gunung Rinjani, Lombok, NTB.
+Interactive WebGIS displaying **OpenStreetMap** base maps with multiple spatial data layers for Taman Nasional Gunung Rinjani, Lombok, NTB. Built for a geographic information systems (GIS) course.
 
 #### Features
 - Interactive map: **zoom in/out, pan**, switch base maps (OpenStreetMap / Topographic / Esri Satellite), **⛶ fit-to-bounds** button
